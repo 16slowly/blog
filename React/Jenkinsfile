@@ -1,0 +1,119 @@
+/**
+ * @see https://github.com/16slowly/blog/issues/10
+ */
+
+def sendSlackNotification(message, color = 'good') {
+  slackSend channel: '#fe',
+            color: color,
+            teamDomain: 'vivedu',
+            message: message
+}
+
+def abortPreviousBuilds() {
+  def currentJobName = env.JOB_NAME
+  def currentBuildNumber = env.BUILD_NUMBER.toInteger()
+  def jobs = Jenkins.instance.getItemByFullName(currentJobName)
+  def builds = jobs.getBuilds()
+
+  for (build in builds) {
+    if (!build.isBuilding()) {
+      continue;
+    }
+
+    if (currentBuildNumber == build.getNumber().toInteger()) {
+      continue;
+    }
+
+    build.doStop()
+  }
+}
+
+pipeline {
+  agent {
+    // @see https://github.com/vivedu/VIVEDU-Store/issues/295
+    docker {
+      image 'node:8.10.0'
+      // 赋予 docker container(uid: 112, gid: 116) 访问镜像根目录的权限及免密登录 nginx 服务器的能力
+      args '-u root:root -v /root/.ssh:/root/.ssh'
+    }
+  }
+
+  parameters {
+    // 获取 jenkinsProjectName
+    string(name: 'jenkinsProjectName', defaultValue: "${env.JOB_NAME.split('/')[0]}")
+  }
+
+  stages {
+    stage('Install') {
+      steps {
+        echo "Project name: ${params.jenkinsProjectName}\nJob name: `${env.JOB_NAME}`\nBranch name: ${env.BRANCH_NAME}\nChange Title: ${env.CHANGE_TITLE}\nBuild ID: ${env.BUILD_ID}\nJenkinsURL: ${env.JENKINS_URL}"
+
+        abortPreviousBuilds()
+
+        // 接入 slack 通知
+        sendSlackNotification("CI is triggered by `${env.JOB_NAME}`\n${env.JENKINS_URL}blue/organizations/jenkins/${params.jenkinsProjectName}/detail/${env.BRANCH_NAME}/${env.BUILD_ID}/pipeline/")
+
+        sh 'npm install'
+      }
+    }
+
+    stage('Test') {
+      steps {
+        sh "npm run test"
+      }
+    }
+
+    stage('Build') {
+      steps {
+        sh "bash scripts/build.sh ${env.BRANCH_NAME} ${env.BUILD_ID} ${env.GIT_COMMIT} ${params.jenkinsProjectName}"
+
+        // 接入 slack 通知
+        sendSlackNotification("`${env.JOB_NAME}` has been built successfully.")
+      }
+    }
+
+    stage('Deploy - Development') {
+      steps {
+        // Deploy to development
+        input "Deploy `${env.JOB_NAME}` into the `development` environment?"
+
+        sh "bash scripts/deploy.sh development"
+
+        // 完成 deploy to development
+        sendSlackNotification("`${env.JOB_NAME}` is deployed into the `development` environment\n${env.JENKINS_URL}blue/organizations/jenkins/${params.jenkinsProjectName}/detail/${env.BRANCH_NAME}/${env.BUILD_ID}/pipeline/")
+      }
+    }
+
+    stage('Deploy - Production') {
+      steps {
+        // Deploy to production
+        input "Deploy `${env.JOB_NAME}` into the `production` environment?"
+
+        sh "bash scripts/deploy.sh production"
+
+        // 完成 deploy to production
+        sendSlackNotification("`${env.JOB_NAME}` is deployed into the `production` environment\n${env.JENKINS_URL}blue/organizations/jenkins/${params.jenkinsProjectName}/detail/${env.BRANCH_NAME}/${env.BUILD_ID}/pipeline/")
+      }
+    }
+  }
+
+  post {
+    aborted {
+      echo 'Build aborted'
+
+      // 接入 slack 通知
+      sendSlackNotification("`${env.JOB_NAME}` is aborted.\n${env.JENKINS_URL}blue/organizations/jenkins/${params.jenkinsProjectName}/detail/${env.BRANCH_NAME}/${env.BUILD_ID}/pipeline/", "warning")
+    }
+
+    success {
+       archiveArtifacts artifacts: 'dist/**', fingerprint: true
+    }
+
+    failure {
+       echo 'Build failed'
+
+       // 接入 slack 通知
+       sendSlackNotification("Failed to build `${env.JOB_NAME}`.\n${env.JENKINS_URL}blue/organizations/jenkins/${params.jenkinsProjectName}/detail/${env.BRANCH_NAME}/${env.BUILD_ID}/pipeline/", "danger")
+    }
+  }
+}
