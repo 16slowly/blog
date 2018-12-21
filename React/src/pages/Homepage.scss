@@ -1,0 +1,14 @@
+@import '../styles/colors.scss';
+
+.title {
+  padding: 20px auto 0 80px;
+}
+
+.list {
+  padding: 20px;
+  font-size: 16px;
+
+  .item {
+    color: $themeColor;
+  }
+}

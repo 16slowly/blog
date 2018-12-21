@@ -1,0 +1,9 @@
+@import '../styles/colors.scss';
+
+.title {
+  margin: 20px auto 0 80px;
+
+  .goback {
+    color: $themeColor;
+  }
+}
