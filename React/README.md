@@ -25,3 +25,4 @@
 - 执行 `npm run storybook` 启动 storybook 对 UI 组件的测试
 - 执行 `npm run build` 进行 prod 环境下的打包
 - 执行 `npm run upload` 打包文件将上传至阿里云
+- 成功配置 CI 之后，执行 `git push` 操作将触发 CI, CI 会自动执行以上命令
