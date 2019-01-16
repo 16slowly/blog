@@ -26,7 +26,7 @@ const fakeList = (options = {}) =>
     )
     .map((id, index) =>
       Object.assign(
-        fakeListItem({ id, index: index + (options.page * options.pageSize)}),
+        fakeListItem({ id, index: index + (options.page * options.pageSize) }),
         {
           digest: faker.lorem.paragraph(),
           thumb_url: faker.image.imageUrl(243, 243, undefined, true, true),

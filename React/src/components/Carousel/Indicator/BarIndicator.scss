@@ -1,0 +1,20 @@
+.root {
+  height: 20px;
+  text-align: center;
+}
+
+.cell {
+  width: 100px;
+  height: 8px;
+  background-color: #ccc;
+  // @see https://github.com/vivedu/VIVEDU-Homepage/issues/76
+  border-radius: 0;
+
+  &.active {
+    background-color: #00b3e3;
+  }
+
+  & + & {
+    margin-left: 20px;
+  }
+}

@@ -1,0 +1,23 @@
+.root {
+  height: 30px;
+}
+
+.indicatorCell {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  // @see https://github.com/vivedu/VIVEDU-Homepage/issues/76
+  border-radius: 0;
+  background-color: #fff;
+  margin-top: 16px;
+
+  &.active {
+    margin-top: 0;
+    height: 28px;
+    background-color: #00b3e3;
+  }
+
+  & + & {
+    margin-left: 12px;
+  }
+}

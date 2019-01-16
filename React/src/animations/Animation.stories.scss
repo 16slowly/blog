@@ -1,0 +1,19 @@
+.container {
+  position: relative;
+  width: 400px;
+  height: 300px;
+}
+
+.slide {
+  overflow: hidden;
+  height: 100%;
+  background-size: cover;
+  background-image: url(http://static-oss.vivedu.com/home/banner/design.min.jpg);
+}
+
+.text {
+  position: absolute;
+  top: 100px;
+  left: 50px;
+  color: #fff;
+}

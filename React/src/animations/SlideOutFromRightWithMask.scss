@@ -1,0 +1,95 @@
+$animationDuration: 1.3s;
+$animationCurve: cubic-bezier(0.58, 0, 0.32, 1);
+$scaleFactor: 1.04;
+
+.root {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  visibility: hidden;
+  position: absolute;
+  top: 0;
+  z-index: 0;
+}
+
+@keyframes popIn {
+  from {
+    opacity: 0;
+    transform: scale(1);
+    visibility: visible;
+  }
+
+  to {
+    opacity: 1;
+    transform: scale($scaleFactor);
+    visibility: visible;
+  }
+}
+
+@keyframes slideOut {
+  0% {
+    opacity: 1;
+    transform: translateX(0) scale($scaleFactor);
+    visibility: visible;
+  }
+
+  75% {
+    opacity: 0.5;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateX(-100%) scale($scaleFactor);
+    visibility: hidden;
+  }
+}
+
+@keyframes slideOutMask {
+  0% {
+    opacity: 0.8;
+    transform: translateX(0) scale($scaleFactor);
+    visibility: visible;
+  }
+
+  75% {
+    opacity: 0.1;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateX(-100%) scale($scaleFactor);
+    visibility: hidden;
+  }
+}
+
+.leave {
+  .content {
+    animation: slideOut $animationDuration $animationCurve forwards;
+  }
+
+  .mask {
+    animation: slideOutMask $animationDuration $animationCurve forwards;
+  }
+}
+
+.enter {
+  .content {
+    animation: popIn $animationDuration $animationCurve forwards;
+  }
+}
+
+.mask {
+  position: absolute;
+  top: 0;
+  // content 放大了 1.04 倍，为了无缝衔接，left 需要使用 104%
+  left: 104%;
+  height: 100%;
+  width: 100%;
+  background-color: #00b3e3;
+}
+
+.content {
+  width: 100%;
+  height: 100%;
+}
+

@@ -1,0 +1,61 @@
+@import '../styles/colors.scss';
+
+.title {
+  margin: 20px auto 0 80px;
+
+  .goback {
+    color: $themeColor;
+  }
+}
+
+.indicators {
+    .indicator {
+      padding: 30px;
+      background-color: #f1f1f1;
+    }
+  }
+  
+.carousel {
+  width: 800px;
+  height: 600px;
+  margin: 0 auto;
+  position: relative;
+
+  .indicator {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    z-index: 2;
+    padding: 30px;
+  }
+}
+
+.carousel {
+  width: 800px;
+  height: 600px;
+  margin: 0 auto;
+  position: relative;
+
+  .indicator {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    z-index: 2;
+    padding: 30px;
+  }
+}
+  
+.slide {
+  overflow: hidden;
+  height: 100%;
+  background-size: cover;
+  background-image: url(http://static-oss.vivedu.com/home/banner/design.min.jpg);
+}
+
+.text {
+  position: absolute;
+  top: 300px;
+  left: 200px;
+  color: #fff;
+}
+  
