@@ -4,11 +4,13 @@
  */
 import { combineReducers } from 'redux-immutable'
 import routing from './routing'
+import list from './list'
 
 // Creates the main reducer with the asynchronously loaded ones
 const createReducer = asyncReducers =>
   combineReducers({
     routing,
+    list,
     ...asyncReducers,
   })
 

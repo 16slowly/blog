@@ -4,11 +4,11 @@ environment=$1
 
 if [ $environment == development ]; then
   certificates=".nginx/dev/next.store.pem .nginx/dev/next.store.key"
-  host=dev@dev.vivedu.com
+  host=username@hostname.com
   nginxConfig=.nginx/dev/next.store
 elif [ $environment == production ]; then
   certificates=".nginx/prod/store.pem .nginx/prod/store.key"
-  host=dev@vivedu.com
+  host=username@hostname.com
   nginxConfig=.nginx/prod/store
 fi
 

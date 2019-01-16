@@ -5,7 +5,7 @@
 def sendSlackNotification(message, color = 'good') {
   slackSend channel: '#fe',
             color: color,
-            teamDomain: 'vivedu',
+            teamDomain: 'teamDomain',
             message: message
 }
 
@@ -30,7 +30,6 @@ def abortPreviousBuilds() {
 
 pipeline {
   agent {
-    // @see https://github.com/vivedu/VIVEDU-Store/issues/295
     docker {
       image 'node:8.10.0'
       // 赋予 docker container(uid: 112, gid: 116) 访问镜像根目录的权限及免密登录 nginx 服务器的能力
